@@ -120,3 +120,24 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4_rds" {
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1"
 }
+
+#EFS
+
+resource "aws_security_group" "efs_sg" {
+  name   = "efs-sg"
+  vpc_id = aws_vpc.aws_capstone_vpc.id
+  description = "Allow NFS from web servers"
+  ingress {
+    from_port       = 2049
+    to_port         = 2049
+    protocol        = "tcp"
+    security_groups = [aws_security_group.aws_ssh_sg.id, aws_security_group.aws_webserver_sg.id]
+  }
+  egress { 
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = { Name = "efs-sg" }
+}

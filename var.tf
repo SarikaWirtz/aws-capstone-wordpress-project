@@ -56,3 +56,4 @@ variable "db_name" {
   type        = string
   sensitive    = true
 }
+

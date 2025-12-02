@@ -49,3 +49,5 @@ resource "aws_lb_listener" "capstone_listener" {
   }
 }
 
+# Outputs
+output "alb_dns" { value = aws_lb.capstone_lb.dns_name }

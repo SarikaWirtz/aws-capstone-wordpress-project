@@ -1,7 +1,5 @@
 #!/bin/bash
 
-exec 2>/tmp/errors.txt
-
 # Install updates
 sudo yum update -y
 
@@ -22,10 +20,10 @@ sudo yum install -y mariadb unzip
 # DBHost="localhost"
 
 # Set database variables for RDS
-DBName="${db_name}"
-DBUser="${username}"
-DBPassword="${password}"
-DBRootPassword="${DBRootPassword}"
+DBName="wordpress"
+DBUser="wordpressuser"
+DBPassword="password3141!"
+DBRootPassword="rootpassword3141!"
 DBHost=$(echo "${rds_endpoint}" | sed 's/:3306//')
 
 # Start Apache server and enable it on system startup
@@ -39,6 +37,8 @@ sudo systemctl enable httpd
 # Wait for MariaDB to fully start
 sleep 10
 
+# # Set MariaDB root password
+# sudo mysqladmin -u root password "$DBRootPassword"
 
 # Download and install WordPress
 sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
@@ -49,13 +49,12 @@ sudo rm -R wordpress
 sudo rm latest.tar.gz
 
 # Making changes to the wp-config.php file, setting the DB name
-sudo cp ./wp-config-sample.php ./wp-config.php
-
-# Update DB settings in wp-config.php
-sudo sed -i "s/database_name_here/$DBName/" wp-config.php
-sudo sed -i "s/username_here/$DBUser/" wp-config.php
-sudo sed -i "s/password_here/$DBPassword/" wp-config.php
+sudo cp ./wp-config-sample.php ./wp-config.php 
+sudo sed -i "s/'database_name_here'/'$DBName'/g" wp-config.php
+sudo sed -i "s/'username_here'/'$DBUser'/g" wp-config.php
+sudo sed -i "s/'password_here'/'$DBPassword'/g" wp-config.php
 sudo sed -i "s/'localhost'/'$DBHost'/g" wp-config.php
+# sudo sed -i "s/'localhost'/'$RDS_ENDPOINT'/g" wp-config.php
 
 # Grant permissions
 sudo usermod -a -G apache ec2-user
@@ -63,7 +62,6 @@ sudo chown -R ec2-user:apache /var/www/
 sudo chmod 2775 /var/www/
 sudo find /var/www/ -type d -exec chmod 2775 {} \;
 sudo find /var/www/ -type f -exec chmod 0664 {} \;
-
 
 # # Create WordPress database
 # sudo echo "CREATE DATABASE IF NOT EXISTS $DBName;" | mysql -u root --password=$DBRootPassword

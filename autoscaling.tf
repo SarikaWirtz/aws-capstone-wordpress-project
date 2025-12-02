@@ -6,14 +6,22 @@ resource "aws_launch_template" "launch-template" {
   image_id               = data.aws_ami.amazon_linux_2.id
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.aws_webserver_sg.id, aws_security_group.aws_ssh_sg.id]
-  user_data              = base64encode(templatefile("${path.module}/userdata.sh", {
+  user_data              = base64encode(templatefile("${path.module}/userdata_with_efs.sh", {
     db_name        = var.db_name
     username       = var.username
     password       = var.password
     DBRootPassword = var.DBRootPassword
-    rds_endpoint = replace(aws_db_instance.mysql.endpoint, ":3306", "") 
+    rds_endpoint   = replace(aws_db_instance.mysql.endpoint, ":3306", "")
+    efs_id         = aws_efs_file_system.efs.id
+    alb_dns        = aws_lb.capstone_lb.dns_name
+    efs_dns_name   = aws_efs_file_system.efs.dns_name
     }))
   key_name               = "vockey"
+  tag_specifications {
+    resource_type = "instance"
+    tags = { Name = "wordpress-web" }
+  }
+  
 }
 
 resource "aws_autoscaling_group" "autoscaling-group" {
@@ -21,13 +29,15 @@ resource "aws_autoscaling_group" "autoscaling-group" {
     default_cooldown = 30
     launch_template {
         id      = aws_launch_template.launch-template.id
-         version = "$Latest"
+        version = "$Latest"
     }
     desired_capacity = 2 # 1 for testing
     min_size         = 2 # 1 for testing
-    max_size         = 3 # 2 for testing
+    max_size         = 4 # 2 for testing
 
     target_group_arns   = [aws_lb_target_group.capstone_tg.arn]
+    health_check_type = "ELB"
+    termination_policies = ["OldestInstance"]
     vpc_zone_identifier = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
     tag {
         key                 = "Name"
