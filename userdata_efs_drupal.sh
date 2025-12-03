@@ -18,6 +18,9 @@ sudo yum update -y
 # Install Apache server
 sudo yum install -y httpd
 
+# Install Git
+yum install -y git
+
 # Install MariaDB, PHP, and necessary tools
 sudo amazon-linux-extras install -y php8.0
 sudo amazon-linux-extras enable mariadb10.5
@@ -43,12 +46,21 @@ sudo chown -R apache:apache /var/www/html
 # ===============================
 # Install WordPress normally (so wp-content has default themes + plugins)
 # ===============================
-if [ ! -f /var/www/html/wp-config.php ]; then
-    sudo cd /tmp
-    sudo wget https://wordpress.org/latest.tar.gz
-    tar -xzf latest.tar.gz
-    cp -r wordpress/* /var/www/html/
-    sudo chown -R apache:apache /var/www/html
+# if [ ! -f /var/www/html/wp-config.php ]; then
+#     sudo cd /tmp
+#     sudo wget https://wordpress.org/latest.tar.gz
+#     tar -xzf latest.tar.gz
+#     cp -r wordpress/* /var/www/html/
+#     sudo chown -R apache:apache /var/www/html
+# fi
+
+# ===============================
+# Install WordPress using git clone.
+# ===============================
+if [ ! -d /var/www/myapp/.git ]; then
+  cd /var/www/html
+  git clone https://github.com/SarikaWirtz/testWordpress.git .
+  sudo chown -R apache:apache /var/www/html
 fi
 
 # ===============================
