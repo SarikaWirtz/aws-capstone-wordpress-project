@@ -1,4 +1,5 @@
 #!/bin/bash
+exec 2>>/tmp/log/user_data.log
 
 # Install updates
 sudo yum update -y

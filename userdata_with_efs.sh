@@ -1,6 +1,6 @@
 #!/bin/bash
 
-exec 2>/tmp/user-data-errors.log
+exec 2>/tmp/log/user-data-errors.log
 
 # Set database variables for RDS
 DBName="${db_name}"
