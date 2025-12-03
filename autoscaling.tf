@@ -6,7 +6,7 @@ resource "aws_launch_template" "launch-template" {
   image_id               = data.aws_ami.amazon_linux_2.id
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.aws_webserver_sg.id, aws_security_group.aws_ssh_sg.id]
-  user_data              = base64encode(templatefile("${path.module}/userdata_with_efs.sh", {
+  user_data              = base64encode(templatefile("${path.module}/userdata_efs_wordpress.sh", {
     db_name        = var.db_name
     username       = var.username
     password       = var.password
