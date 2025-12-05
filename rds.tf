@@ -6,13 +6,13 @@ resource "aws_db_subnet_group" "aurora_subnet_group" {
 
 resource "aws_db_instance" "mysql" {
   allocated_storage      = "10"
-  db_name                = var.db_name
+  db_name                = var.DBName
   engine                 = "mysql"
   engine_version         = "8.0.42"
   instance_class         = "db.t3.micro"
   identifier             = "rds-db"
-  username               = var.username
-  password               = var.password
+  username               = var.DBUser
+  password               = var.DBPassword
   skip_final_snapshot    = true
   multi_az               = false
   storage_encrypted      = false
