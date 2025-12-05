@@ -3,15 +3,15 @@
 # Launch Template
 resource "aws_launch_template" "launch-template" {
   name                   = "wordpress-template"
-  image_id               = data.aws_ami.amazon_linux_2.id
+  image_id               = data.aws_ami.amazon_linux_2023.id
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.aws_webserver_sg.id, aws_security_group.aws_ssh_sg.id]
   user_data              = base64encode(templatefile("${path.module}/userdata_efs_wordpress.sh", {
-    db_name        = var.db_name
-    username       = var.username
-    password       = var.password
+    DBName         = var.DBName
+    DBUser         = var.DBUser
+    DBPassword     = var.DBPassword
     DBRootPassword = var.DBRootPassword
-    rds_endpoint   = replace(aws_db_instance.mysql.endpoint, ":3306", "")
+    DBHost         = replace(aws_db_instance.mysql.endpoint, ":3306", "")
     efs_id         = aws_efs_file_system.efs.id
     alb_dns        = aws_lb.capstone_lb.dns_name
     efs_dns_name   = aws_efs_file_system.efs.dns_name

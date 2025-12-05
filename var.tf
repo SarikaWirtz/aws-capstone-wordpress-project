@@ -22,38 +22,37 @@ variable "aws_instance_type_t2micro" {
   default     = "t2.micro"
 }
 
-# variable "DBName" {
-#   type        = string
-#   sensitive    = true
-# }
+variable "DBName" {
+  type        = string
+  sensitive    = true
+}
 
-# variable "DBUser" {
-#   type        = string
-#   sensitive    = true
-# }
+variable "DBUser" {
+  type        = string
+  sensitive    = true
+}
 
-# variable "DBPassword" {
-#   type        = string
-#   sensitive    = true
-# }
+variable "DBPassword" {
+  type        = string
+  sensitive    = true
+}
 
 variable "DBRootPassword" {
   type        = string
   sensitive    = true
 }
 
-variable "username" {
-  type        = string
-  sensitive    = true
-}
+# variable "username" {
+#   type        = string
+#   sensitive    = true
+# }
 
-variable "password" {
-  type        = string
-  sensitive    = true
-}
+# variable "password" {
+#   type        = string
+#   sensitive    = true
+# }
 
-variable "db_name" {
-  type        = string
-  sensitive    = true
-}
-
+# variable "db_name" {
+#   type        = string
+#   sensitive    = true
+# }
